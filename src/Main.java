@@ -46,11 +46,11 @@ public class Main {
         cards = new JPanel(new CardLayout());
         cards.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        List<Map> records = database.select("sections", new String[]{"sectionTitle"});
+        List<Map<String, String>> records = database.select("sections", new String[]{"sectionTitle"});
 
         // automated creation based on sections in database
         for (int i = 0, n = records.size(); i < n; i++) {
-            String sectionTitle = records.get(i).get("sectionTitle").toString();
+            String sectionTitle = records.get(i).get("sectionTitle");
             JPanel card = new Editor(i + 1, sectionTitle, database).getPanel();
             cards.add(card, sectionTitle);
         }
@@ -87,11 +87,11 @@ public class Main {
         // read sections from database
         for (int i = 0, n = database.select("sections", new String[]{"sectionTitle"}).size(); i < n; i++) {
 
-            Map record = database.select(
+            Map<String, String> record = database.select(
                     "sections", new String[]{"sectionTitle", "isLocked"}
             ).get(i);
             new Section(
-                    (String) record.get("sectionTitle"),
+                    record.get("sectionTitle"),
                     record.get("isLocked").equals("TRUE"),
                     tabs,
                     cards,
@@ -181,13 +181,13 @@ public class Main {
         createButton.addActionListener(e -> {
             String title = titleField.getText();
 
-            List<Map> records = database.select("sections", new String[]{"id", "sectionTitle"});
+            List<Map<String, String>> records = database.select("sections", new String[]{"id", "sectionTitle"});
             boolean isValid = true;
 
             // ensure no duplicates when creating
-            for (Map record : records) {
-                if (!Objects.equals(record.get("id").toString(), index.toString()) &&
-                        record.get("sectionTitle").toString().equalsIgnoreCase(title.strip())) {
+            for (Map<String, String> record : records) {
+                if (!Objects.equals(record.get("id"), index.toString()) &&
+                        record.get("sectionTitle").equalsIgnoreCase(title.strip())) {
                     System.out.println(record.get("id") + ", " + (index - 1));
                     isValid = false;
                     newTitlePanel.setText("Section title already exists");

@@ -160,7 +160,7 @@ public class Authentication implements ActionListener {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
             // database handler to retrieve password
-            Map intel = authApp.select("authentication", new String[]{"encryptedText"}).get(0);
+            Map<String, String> intel = authApp.select("authentication", new String[]{"encryptedText"}).get(0);
 
             // reconstruct secret key
             // decipher from file
@@ -172,7 +172,7 @@ public class Authentication implements ActionListener {
 
             cipher.init(Cipher.DECRYPT_MODE, newKey, IV_PARAMETER_SPEC); // initialization vector required
 
-            byte[] encryptedText = Base64.getDecoder().decode(intel.get("encryptedText").toString());
+            byte[] encryptedText = Base64.getDecoder().decode(intel.get("encryptedText"));
             decryptedText = cipher.doFinal(encryptedText);
         } catch (IndexOutOfBoundsException error) {
             // first time password setup

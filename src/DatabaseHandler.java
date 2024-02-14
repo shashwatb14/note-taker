@@ -84,7 +84,7 @@ public class DatabaseHandler {
 
     // selects specific columns based on argument
     // https://stackoverflow.com/questions/13543457/how-do-you-create-a-dictionary-in-java
-    public List<Map> select(String tableName, String[] columns) {
+    public List<Map<String, String>> select(String tableName, String[] columns) {
 
         // build column argument for sql statement
         StringBuilder columnList = new StringBuilder();
@@ -101,7 +101,7 @@ public class DatabaseHandler {
 
             // using just list for initialization gives more flexibility
             // using dynamic arraylist - no need to specify length before usage
-            List<Map> records = new ArrayList<>();
+            List<Map<String, String>> records = new ArrayList<>();
 
             for (int i = 0; resultSet.next(); i++) {
                 Map<String, String> results = new HashMap<>();

@@ -160,6 +160,7 @@ public class Authentication implements ActionListener {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
             // database handler to retrieve password
+            // raw types: https://stackoverflow.com/questions/2770321/what-is-a-raw-type-and-why-shouldnt-we-use-it
             Map<String, String> intel = authApp.select("authentication", new String[]{"encryptedText"}).get(0);
 
             // reconstruct secret key

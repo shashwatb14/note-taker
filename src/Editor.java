@@ -113,7 +113,10 @@ public class Editor implements KeyListener, ActionListener {
                 }
             }
         });
-        EDITOR_PANE.setFont(new Font(Font.SERIF, Font.PLAIN, 14));
+
+        // font for text/html: https://stackoverflow.com/questions/12542733/setting-default-font-in-jeditorpane
+        EDITOR_PANE.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        EDITOR_PANE.setFont(Main.getFont(Main.FONTS.SANS));
         EDITOR_PANE.setText(convertTextToHtml(content)); // https://www.tutorialspoint.com/how-to-set-font-for-text-in-jtextpane-with-javaw
         EDITOR_PANE.addKeyListener(this);
         EDITOR_PANE.setEditable(false);
@@ -218,6 +221,8 @@ public class Editor implements KeyListener, ActionListener {
                 EDITOR_PANE.setContentType("text");
                 EDITOR_PANE.setText(getContent());
                 System.out.println("Editing...");
+                EDITOR_PANE.setFont(Main.getFont(Main.FONTS.MONO));
+
                 EDIT_BUTTON.setText("Save");
                 EDITOR_PANE.setEditable(true);
             } else {
@@ -225,6 +230,8 @@ public class Editor implements KeyListener, ActionListener {
                 EDITOR_PANE.setContentType("text/html");
                 EDITOR_PANE.setText(convertTextToHtml(getContent()));
                 EDITOR_PANE.setEditable(false);
+
+                EDITOR_PANE.setFont(Main.getFont(Main.FONTS.SANS));
                 EDIT_BUTTON.setText("Edit");
                 System.out.println("Returning...");
             }

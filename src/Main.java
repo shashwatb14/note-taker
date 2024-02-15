@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class Main {
     private static JFrame mainFrame;
     private static DatabaseHandler database;
     private static JPanel cards;
+    public static Font mono;
 
     // dark colors
     // enums: https://www.w3schools.com/java/java_enums.asp
@@ -36,16 +39,30 @@ public class Main {
         GREEN, RED
     }
 
+    // fonts
+    public enum FONTS {
+        MONO, SANS
+    }
+
     public static void main(String[] args) {
+
+        // load fonts: https://stackoverflow.com/questions/5652344/how-can-i-use-a-custom-font-in-java
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(getFont(FONTS.MONO));
+            ge.registerFont(getFont(FONTS.SANS));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // connect to database
         database = new DatabaseHandler("./src/database.db");
         database.select("authentication", true);
 
         // to reset application
-        database.reset("authentication");
+        /*database.reset("authentication");
         database.reset("sections");
-        database.reset("notes");
+        database.reset("notes");*/
 
         // Authentication test
         // polymorphism
@@ -348,5 +365,22 @@ public class Main {
         };
 
         return color;
+    }
+
+    public static Font getFont(FONTS option) {
+        Font font = null;
+
+        try {
+            font = switch (option) {
+                case MONO ->
+                        Font.createFont(Font.TRUETYPE_FONT, new File("./src/fonts/NotoSansMono-Regular.ttf")).deriveFont(12f);
+                case SANS ->
+                        Font.createFont(Font.TRUETYPE_FONT, new File("./src/fonts/NotoSansDisplay-Regular.ttf")).deriveFont(14f);
+            };
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return font;
     }
 }

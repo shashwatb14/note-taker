@@ -6,10 +6,9 @@
  */
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.List;
 public class Section implements ActionListener {
 
     private final boolean LOCKED;
+    private final JButton MAIN_BUTTON = new JButton();
 
     private final JButton EDIT_BUTTON = new JButton("Edit");
     private final JButton ARCHIVE_BUTTON = new JButton("Archive");
@@ -49,24 +49,34 @@ public class Section implements ActionListener {
 
         // styling buttons: https://stackoverflow.com/questions/4898584/java-using-an-image-as-a-button
         // clickable panels
-        JButton MAIN_BUTTON = new JButton();
-        MAIN_BUTTON.setContentAreaFilled(false);
-        MAIN_BUTTON.setBorderPainted(false);
+        MAIN_BUTTON.setContentAreaFilled(true);
+        MAIN_BUTTON.setBorderPainted(true);
 
+        // stylized borders: https://stackoverflow.com/questions/33954698/jbutton-change-default-border
+        MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.DARK));
+
+        // borders: https://stackoverflow.com/questions/33954698/jbutton-change-default-border
+        MAIN_BUTTON.setBorder(new LineBorder(Main.getDarkColor(Main.DARK_COLORS.LIGHT), 2, true));
+
+        // transparent panels: stackoverflow.com/questions/6399600/how-to-make-java-awt-label-background-transparent
         JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(new Color(0, 0, 0, 0));
         JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(new Color(0, 0, 0, 0));
         JPanel lockPanel = new JPanel();
+        lockPanel.setBackground(new Color(0, 0, 0, 0));
 
         JLabel lockStatus;
         if (this.isLocked()) {
             lockStatus = new JLabel("Locked");
-            lockStatus.setForeground(Color.BLUE);
+            lockStatus.setForeground(Main.getColor(Main.COLORS.GREEN));
         } else {
             lockStatus = new JLabel("Unlocked");
-            lockStatus.setForeground(Color.RED);
+            lockStatus.setForeground(Main.getColor(Main.COLORS.RED));
         }
 
         JLabel sectionTitle = new JLabel("  " + title + "  ");
+        sectionTitle.setForeground(Main.getDarkColor(Main.DARK_COLORS.TEXT));
         titlePanel.add(sectionTitle);
         lockPanel.add(lockStatus);
         MAIN_BUTTON.add(titlePanel);
@@ -78,6 +88,48 @@ public class Section implements ActionListener {
 
         // update cursor to pointer
         Main.changeCursor(MAIN_BUTTON, new Cursor(Cursor.HAND_CURSOR));
+
+        MAIN_BUTTON.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // fixing color changing issue
+                MAIN_BUTTON.setContentAreaFilled(false);
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                MAIN_BUTTON.setContentAreaFilled(true);
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.DARK));
+            }
+        });
+
+        MAIN_BUTTON.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
+            }
+        });
 
         buttonsPanel.add(EDIT_BUTTON);
         buttonsPanel.add(ARCHIVE_BUTTON);
@@ -174,6 +226,7 @@ public class Section implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        MAIN_BUTTON.setBackground(Main.getDarkColor(Main.DARK_COLORS.LIGHT));
         // first check if locked
         if (this.isLocked()) {
             // lambda function

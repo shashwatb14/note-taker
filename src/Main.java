@@ -20,6 +20,22 @@ public class Main {
     private static DatabaseHandler database;
     private static JPanel cards;
 
+    // dark colors
+    // enums: https://www.w3schools.com/java/java_enums.asp
+    public enum DARK_COLORS {
+        DARKER, DARK, LIGHT, LIGHTER, TEXT
+    }
+
+    // light colors
+    public enum LIGHT_COLORS {
+        DARKER, DARK, LIGHT, LIGHTER, TEXT
+    }
+
+    // other colors
+    public enum COLORS {
+        GREEN, RED
+    }
+
     public static void main(String[] args) {
 
         // connect to database
@@ -62,7 +78,7 @@ public class Main {
     private static JFrame buildFrame() {
 
         // main window
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Notable Notes");
 
         // size of 1200 width, 800 height
         mainFrame.setSize(1200, 800);
@@ -82,7 +98,7 @@ public class Main {
         // border - https://stackoverflow.com/questions/46572625/how-to-change-width-size-of-jpanels-in-borderlayout
         // spacing - https://stackoverflow.com/questions/8335997/how-can-i-add-a-space-in-between-two-buttons-in-a-boxlayout
         tabs.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        tabs.setBackground(Color.LIGHT_GRAY);
+        tabs.setBackground(getDarkColor(DARK_COLORS.DARKER));
 
         // read sections from database
         for (int i = 0, n = database.select("sections", new String[]{"sectionTitle"}).size(); i < n; i++) {
@@ -99,19 +115,20 @@ public class Main {
             );
         }
 
-        JButton addButton = getjButton();
+        tabs.add(Box.createRigidArea(new Dimension(0, 5)));
+        JButton addButton = getAddButton();
         tabs.add(addButton);
 
         JScrollPane menu = new JScrollPane(tabs);
         menu.setLayout(new ScrollPaneLayout());
-        menu.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        menu.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         menu.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         mainFrame.add(menu, BorderLayout.WEST);
         mainFrame.add(cards, BorderLayout.CENTER);
     }
 
-    private static JButton getjButton() {
+    private static JButton getAddButton() {
         JButton addButton = new JButton("Add new section");
         changeCursor(addButton, new Cursor(Cursor.HAND_CURSOR));
 
@@ -291,5 +308,45 @@ public class Main {
         newSectionFrame.pack();
         newSectionFrame.setLocationRelativeTo(null); // puts frame in the middle
         newSectionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    // color palette from: https://coolors.co/08070d-181627-272541-3f3c68-d9d8e9-e4a862-eabb85-f3d8ba-fcf5ed-110b03
+    public static Color getDarkColor(DARK_COLORS option) {
+        Color color = null;
+
+        color = switch (option) {
+            case DARKER -> new Color(0x08070D);
+            case DARK -> new Color(0x181627);
+            case LIGHT -> new Color(0x272541);
+            case LIGHTER -> new Color(0x3F3C68);
+            case TEXT -> new Color(0xD9D8E9);
+        };
+
+        return color;
+    }
+
+    public static Color getLightColor(LIGHT_COLORS option) {
+        Color color = null;
+
+        color = switch (option) {
+            case DARKER -> new Color(0xE4A862);
+            case DARK -> new Color(0xEABB85);
+            case LIGHT -> new Color(0xF3D8BA);
+            case LIGHTER -> new Color(0xFCF5ED);
+            case TEXT -> new Color(0x110B03);
+        };
+
+        return color;
+    }
+
+    public static Color getColor(COLORS option) {
+        Color color = null;
+
+        color = switch (option) {
+            case GREEN -> new Color(0x2A9D8F);
+            case RED -> new Color(0xE63946);
+        };
+
+        return color;
     }
 }
